@@ -1,0 +1,26 @@
+CXX = g++
+CXXFLAGS = -Wall -Wextra -std=c++17
+OBJDIR = build
+BINDIR = build
+LIBDIR = build
+
+SOURCES = calculator.cpp main.cpp
+OBJECTS = $(patsubst %.cpp, $(OBJDIR)/%.o, $(SOURCES))
+TARGET = $(BINDIR)/calculator
+STATIC_LIB = $(LIBDIR)/libcalculator.a
+
+all: $(STATIC_LIB) $(TARGET)
+
+$(OBJDIR)/%.o: %.cpp
+	mkdir -p $(OBJDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(STATIC_LIB): $(OBJDIR)/calculator.o
+	ar rcs $@ $^
+
+$(TARGET): $(STATIC_LIB) $(OBJDIR)/main.o
+	mkdir -p $(BINDIR)
+	$(CXX) $^ -o $@
+
+clean:
+	rm -rf $(OBJDIR) $(BINDIR)
